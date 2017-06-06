@@ -14,6 +14,7 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode, unique=True)
+    password = db.Column(db.Unicode)
     firstname = db.Column(db.Unicode)
     lastname = db.Column(db.Unicode)
     email = db.Column(db.Unicode, unique=True)
@@ -24,6 +25,7 @@ class Customer(db.Model):
 class Deliveryperson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode, unique=True)
+    password = db.Column(db.Unicode)
     firstname = db.Column(db.Unicode)
     lastname = db.Column(db.Unicode)
     email = db.Column(db.Unicode, unique=True)
@@ -46,6 +48,7 @@ class Order(db.Model):
 class Restaurant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode, unique=True)
+    password = db.Column(db.Unicode)
     name = db.Column(db.Unicode)
     address = db.Column(db.Unicode)
     owner = db.Column(db.Unicode)
@@ -64,10 +67,10 @@ manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
 
 # Create API endpoints, which will be available at /api/<tablename> by
 # default. Allowed HTTP methods can be specified as well.
-manager.create_api(Customer, methods=['GET', 'POST', 'PUT', 'DELETE'])
-manager.create_api(Deliveryperson, methods=['GET', 'POST', 'PUT', 'DELETE'])
+manager.create_api(Customer, methods=['GET', 'POST', 'PUT', 'DELETE'], exclude_columns=['password'])
+manager.create_api(Deliveryperson, methods=['GET', 'POST', 'PUT', 'DELETE'], exclude_columns=['password'])
 manager.create_api(Order, methods=['GET', 'POST'])
-manager.create_api(Restaurant, methods=['GET', 'POST', 'PUT', 'DELETE'])
+manager.create_api(Restaurant, methods=['GET', 'POST', 'PUT', 'DELETE'], exclude_columns=['password'])
 
 # start the flask loop
 app.run()
