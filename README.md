@@ -1,4 +1,4 @@
-Prototype of a REST API for a Foodora-like company built with the Flask-restless.
+Prototype of a REST API for a Foodora-like company built with Flask-restless.
 
 Student project for the "Software Engineering - Design" course at FRA-UAS during the summer semester 2017.
 
@@ -15,4 +15,4 @@ python3 app.py
 ```
 
 ## Example requests
-Start the automated presentation by typing `python3 example-requests.py`
+Start the automated presentation by running `python3 example-requests.py`
