@@ -16,9 +16,21 @@ class Customer(db.Model):
     username = db.Column(db.Unicode, unique=True)
     firstname = db.Column(db.Unicode)
     lastname = db.Column(db.Unicode)
-    email = db.Column(db.Unicode)
+    email = db.Column(db.Unicode, unique=True)
     phone = db.Column(db.Unicode)
     orders = db.relationship('Order', backref="customer", lazy='dynamic')
+
+
+class Deliveryperson(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.Unicode, unique=True)
+    firstname = db.Column(db.Unicode)
+    lastname = db.Column(db.Unicode)
+    email = db.Column(db.Unicode, unique=True)
+    phone = db.Column(db.Unicode)
+    on_duty = db.Column(db.Boolean, default=False)
+    has_order_assigned = db.Column(db.Boolean, default=False)
+    assigned_order = db.Column(db.Integer, db.ForeignKey('order.id'))
 
 
 class Order(db.Model):
@@ -37,7 +49,7 @@ class Restaurant(db.Model):
     name = db.Column(db.Unicode)
     address = db.Column(db.Unicode)
     owner = db.Column(db.Unicode)
-    email = db.Column(db.Unicode)
+    email = db.Column(db.Unicode, unique=True)
     phone = db.Column(db.Unicode)
     subscription_type = db.Column(db.Unicode)
     # TODO menu
@@ -53,6 +65,7 @@ manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
 # Create API endpoints, which will be available at /api/<tablename> by
 # default. Allowed HTTP methods can be specified as well.
 manager.create_api(Customer, methods=['GET', 'POST', 'PUT', 'DELETE'])
+manager.create_api(Deliveryperson, methods=['GET', 'POST', 'PUT', 'DELETE'])
 manager.create_api(Order, methods=['GET', 'POST'])
 manager.create_api(Restaurant, methods=['GET', 'POST', 'PUT', 'DELETE'])
 
