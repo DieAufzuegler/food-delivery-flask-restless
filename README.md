@@ -8,11 +8,21 @@ Student project for the "Software Engineering - Design" course at FRA-UAS during
 * flask-restless
 * flask-sqlalchemy
 
-## How to start the API server
+### Install requirements in Fedora 25
+```sudo dnf install python3 python3-flask python3-pip
+sudo pip3 install flask-restless
+```
+
+### Install requirements in Ubuntu 17.04
+```sudo apt install python3 python3-flask python3-flask-sqlalchemy python3-pip
+sudo pip3 install flask-restless
+```
+
+## Starting the API server
 Clone or download the repository and then run
 ```cd food-delivery-flask-restless/
 python3 app.py
 ```
 
 ## Example requests
-Start the automated presentation by running `python3 example-requests.py`
+Once the API server is running you can start an automated presentation by running `python3 example-requests.py`
