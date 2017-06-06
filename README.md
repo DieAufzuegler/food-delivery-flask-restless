@@ -9,10 +9,12 @@ Prototype of a REST API for a Foodora-like company built with the Swagger framew
 ## How to start the API server
 Clone or download the repository
 ```cd food-delivery-flask-restless/
-python3 app.py```
+python3 app.py
+```
 
 ## Example requests for demonstration
-```python3 example-requests.py```
+```python3 example-requests.py
+```
 
 
 
