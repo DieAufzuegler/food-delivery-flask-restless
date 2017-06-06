@@ -4,17 +4,20 @@ Student project for the "Software Engineering - Design" course at FRA-UAS during
 
 ## Requirements
 * python3
+* python3-wtforms
 * flask
+* flask-login
 * flask-restless
 * flask-sqlalchemy
+* flask-wtf
 
 ### Install requirements in Fedora 25
-> sudo dnf install python3 python3-flask python3-pip  
+> sudo dnf install python3 python3-flask python3-flask-login python3-flask-wtf python3-wtforms python3-pip  
 > sudo pip3 install flask-restless
 
 ### Install requirements in Ubuntu 17.04
-> sudo apt install python3 python3-flask python3-flask-sqlalchemy python3-pip  
-> sudo pip3 install flask-restless
+> sudo apt install python3 python3-flask python3-flask-login python3-flask-sqlalchemy python3-wtforms python3-pip  
+> sudo pip3 install flask-restless flask-wtf
 
 
 ## Starting the REST API server

@@ -10,9 +10,9 @@ def faketype(string):
 
 commands = [
     ['List all restaurants', 'curl -H "Content-Type: application/json" -i http://localhost:5000/api/restaurant' ],
-    ['Add restaurant Panuccis Pizza', 'curl -H "Content-Type: application/json" -i -X POST -d \'{ "username": "donenzo", "name": "Panuccis Pizza", "address": "Time Square 1, New New York", "owner": "Enzo Panucci", "email": "panuccis@example.com", "phone": "+1 555 123456", "subscription_type": "Display only" }\' http://localhost:5000/api/restaurant'],
-    ['Add another restaurant', 'curl -H "Content-Type: application/json" -i -X POST -d \'{ "username": "veganpower", "name": "Hipster Hut", "address": "Somewhere", "owner": "Ernst Freigeist", "email": "veganpower@example.com", "phone": "+49 213 12321", "subscription_type": "Premium" }\' http://localhost:5000/api/restaurant'],
-    ['List all restaurants again', 'curl -H "Content-Type: application/json" -i http://localhost:5000/api/restaurant' ],
+    #['Add restaurant Panuccis Pizza', 'curl -H "Content-Type: application/json" -i -X POST -d \'{ "username": "donenzo", "name": "Panuccis Pizza", "address": "Time Square 1, New New York", "owner": "Enzo Panucci", "email": "panuccis@example.com", "phone": "+1 555 123456", "subscription_type": "Display only" }\' http://localhost:5000/api/restaurant'],
+    #['Add another restaurant', 'curl -H "Content-Type: application/json" -i -X POST -d \'{ "username": "veganpower", "name": "Hipster Hut", "address": "Somewhere", "owner": "Ernst Freigeist", "email": "veganpower@example.com", "phone": "+49 213 12321", "subscription_type": "Premium" }\' http://localhost:5000/api/restaurant'],
+    #['List all restaurants again', 'curl -H "Content-Type: application/json" -i http://localhost:5000/api/restaurant' ],
     ['Add customer John Doe', 'curl -H "Content-Type: application/json" -i -X POST -d \'{ "username": "doedoe", "firstname": "John", "lastname": "Doe", "email": "jd@example.com", "phone": "+49 123 456789" }\' http://localhost:5000/api/customer'],
     ['Get customer with ID 1', 'curl -H "Content-Type: application/json" -i http://localhost:5000/api/customer/1'],
     ['John Doe places an order at Panuccis Pizza', 'curl -H "Content-Type: application/json" -i -X POST -d \'{ "customer_id": 1, "delivery_address": "Schlossallee 1, 12345 Aachen", "restaurant_id": 1, "status": "open }\' http://localhost:5000/api/order'],
