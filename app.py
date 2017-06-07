@@ -126,6 +126,7 @@ def login():
                                              password=password).all()
         if len(matches) > 0:
             flask_login.login_user(matches[0])
+            flask.flash('Login successful')
             return flask.redirect(flask.url_for('index'))
         flask.flash('Username and password pair not found')
     return flask.render_template('login.html', form=form)

@@ -1,5 +1,16 @@
 <!doctype html>
 <html>
 <head><title>Food Delivery REST API</title></head>
-<body>Food Delivery REST API</body>
+<body>
+Food Delivery REST API<br>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+</body>
 </html>
