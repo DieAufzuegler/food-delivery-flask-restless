@@ -122,8 +122,12 @@ def login():
         # you would check username and password here...
         #
         username, password = form.username.data, form.password.data
-        matches = Restaurant.query.filter_by(username=username,
-                                             password=password).all()
+        matches = Customer.query.filter_by(username=username,
+                                           password=password).all()
+        matches += Deliveryperson.query.filter_by(username=username,
+                                                  password=password).all()
+        matches += Restaurant.query.filter_by(username=username,
+                                              password=password).all()
         if len(matches) > 0:
             flask_login.login_user(matches[0])
             flask.flash('Login successful')
