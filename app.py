@@ -1,9 +1,9 @@
 import os
 import datetime
 import flask
-import flask_login
 import flask_sqlalchemy
 import flask_restless
+from hashlib import md5
 
 # Create the Flask application and the Flask-SQLAlchemy object.
 app = flask.Flask(__name__)
@@ -16,7 +16,7 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 api_manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
 
 # Define Flask-SQLALchemy models.
-class Customer(db.Model, flask_login.UserMixin):
+class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode, unique=True)
     password = db.Column(db.Unicode)
@@ -52,7 +52,7 @@ class Order(db.Model):
     # TODO order_items
 
 
-class Restaurant(db.Model, flask_login.UserMixin):
+class Restaurant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode, unique=True)
     password = db.Column(db.Unicode)
@@ -64,6 +64,12 @@ class Restaurant(db.Model, flask_login.UserMixin):
     subscription_type = db.Column(db.Unicode)
     # TODO menu
     orders = db.relationship('Order', backref="restaurant", lazy='dynamic')
+
+
+class Token(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.Unicode)
+    token = db.Column(db.Unicode)
 
 
 # Create the database tables.
@@ -93,10 +99,39 @@ restaurant2 = Restaurant(username=u'veganpower',
 db.session.add(restaurant2)
 db.session.commit()
 
+# Authentication
+@app.route('/auth', methods=['GET', 'POST'])
+def auth():
+    username = flask.request.json.get('username')
+    password = flask.request.json.get('password')
+
+    # check if the user is in any of the tables
+    matches = Customer.query.filter_by(username=username,
+                                       password=password).all()
+    matches += Deliveryperson.query.filter_by(username=username,
+                                              password=password).all()
+    matches += Restaurant.query.filter_by(username=username,
+                                          password=password).all()
+    if len(matches) > 0:
+        # generate a token (this is obviously an insecure way of doing so)
+        token = md5(password.encode('utf-8')).hexdigest()
+        # store token in database
+        dbentry = Token(username=username, token=token)
+        db.session.add(dbentry)
+        db.session.commit()
+
+        # hand the token to the API client
+        return flask.jsonify(token=token)
+
+    # no matching user found
+    raise flask_restless.ProcessingException(description='Not Authorized', code=401)
+
 # create the API for User with the authentication guard.
 def auth_func(**kw):
-    # for demonstration purposes any request with an Authorization header field will be treated as legit
-    if not flask.request.headers.get('Authorization'):
+    token = flask.request.headers.get('Authorization')
+    # search token in databasae
+    matches = Token.query.filter_by(token=token).all()
+    if len(matches) == 0:
         raise flask_restless.ProcessingException(description='Not Authorized', code=401)
 
 
@@ -107,7 +142,8 @@ api_manager.create_api(Customer,
                        exclude_columns=['password'],
                        preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
 api_manager.create_api(Deliveryperson, methods=['GET', 'POST', 'PUT', 'DELETE'], exclude_columns=['password'])
-api_manager.create_api(Order, methods=['GET', 'POST'])
+api_manager.create_api(Order, methods=['GET', 'POST'],
+                       preprocessors=dict(POST_SINGLE=[auth_func]))
 api_manager.create_api(Restaurant, methods=['GET', 'PUT', 'DELETE'], exclude_columns=['password'],
                        preprocessors=dict(PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]))
 
