@@ -8,15 +8,14 @@ import flask_restless
 # Create the Flask application and the Flask-SQLAlchemy object.
 app = flask.Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SECRET_KEY'] = os.urandom(24)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
 db = flask_sqlalchemy.SQLAlchemy(app)
 
-# Create the Flask-Restless API manager and Flask-Login manager.
+# Create the Flask-Restless API manager.
 api_manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
 
-# Define Flask-SQLALchemy models
+# Define Flask-SQLALchemy models.
 class Customer(db.Model, flask_login.UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Unicode, unique=True)
@@ -70,7 +69,7 @@ class Restaurant(db.Model, flask_login.UserMixin):
 # Create the database tables.
 db.create_all()
 
-# hardcore a few db entries
+# Hardcode a few db entries.
 
 restaurant1 = Restaurant(username=u'donenzo',
                          password=u'admin',
