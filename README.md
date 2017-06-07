@@ -9,7 +9,7 @@ Student project for the "Software Engineering - Design" course at FRA-UAS during
 * flask-sqlalchemy
 
 ### Install requirements in Fedora 25
-> sudo dnf install python3 python3-flask python3-pip  
+> sudo dnf install python3 python3-flask python3-flask-sqlalchemy python3-pip  
 > sudo pip3 install flask-restless
 
 ### Install requirements in Ubuntu 17.04
