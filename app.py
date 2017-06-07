@@ -140,12 +140,23 @@ def auth_func(**kw):
 api_manager.create_api(Customer,
                        methods=['GET', 'POST', 'PUT', 'DELETE'],
                        exclude_columns=['password'],
-                       preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
-api_manager.create_api(Deliveryperson, methods=['GET', 'POST', 'PUT', 'DELETE'], exclude_columns=['password'])
-api_manager.create_api(Order, methods=['GET', 'POST'],
-                       preprocessors=dict(POST_SINGLE=[auth_func]))
+                       preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func],
+                                          PUT_SINGLE=[auth_func], PUT_MANY=[auth_func],
+                                          DELETE_SINGLE=[auth_func], DELETE_MANY=[auth_func]))
+api_manager.create_api(Deliveryperson,
+                       methods=['GET', 'POST', 'PUT', 'DELETE'],
+                       exclude_columns=['password'],
+                       preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func],
+                                          PUT_SINGLE=[auth_func], PUT_MANY=[auth_func],
+                                          DELETE_SINGLE=[auth_func], DELETE_MANY=[auth_func]))
+api_manager.create_api(Order,
+                       methods=['GET', 'POST', 'PUT'],
+                       preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func],
+                                          POST=[auth_func],
+                                          PUT_SINGLE=[auth_func], PUT_MANY=[auth_func]))
 api_manager.create_api(Restaurant, methods=['GET', 'PUT', 'DELETE'], exclude_columns=['password'],
-                       preprocessors=dict(PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]))
+                       preprocessors=dict(PUT_SINGLE=[auth_func], PUT_MANY=[auth_func],
+                                          DELETE_SINGLE=[auth_func], DELETE_MANY=[auth_func]))
 
 # start the flask loop
 app.run()
