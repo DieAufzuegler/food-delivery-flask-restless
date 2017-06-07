@@ -4,8 +4,6 @@ import flask
 import flask_login
 import flask_sqlalchemy
 import flask_restless
-import flask_wtf
-import wtforms
 
 # Create the Flask application and the Flask-SQLAlchemy object.
 app = flask.Flask(__name__)
@@ -17,8 +15,6 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 
 # Create the Flask-Restless API manager and Flask-Login manager.
 api_manager = flask_restless.APIManager(app, flask_sqlalchemy_db=db)
-login_manager = flask_login.LoginManager()
-login_manager.setup_app(app)
 
 # Define Flask-SQLALchemy models
 class Customer(db.Model, flask_login.UserMixin):
@@ -98,46 +94,10 @@ restaurant2 = Restaurant(username=u'veganpower',
 db.session.add(restaurant2)
 db.session.commit()
 
-# create user loader
-@login_manager.user_loader
-def load_user(userid):
-    return Restaurant.query.get(userid)
-
-# create the login form.
-class LoginForm(flask_wtf.Form):
-    username = wtforms.TextField('username')
-    password = wtforms.PasswordField('password')
-    submit = wtforms.SubmitField('Login')
-
-# custom URIs
-@app.route('/', methods=['GET'])
-def index():
-    return flask.render_template('index.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        #
-        # you would check username and password here...
-        #
-        username, password = form.username.data, form.password.data
-        matches = Customer.query.filter_by(username=username,
-                                           password=password).all()
-        matches += Deliveryperson.query.filter_by(username=username,
-                                                  password=password).all()
-        matches += Restaurant.query.filter_by(username=username,
-                                              password=password).all()
-        if len(matches) > 0:
-            flask_login.login_user(matches[0])
-            flask.flash('Login successful')
-            return flask.redirect(flask.url_for('index'))
-        flask.flash('Username and password pair not found')
-    return flask.render_template('login.html', form=form)
-
 # create the API for User with the authentication guard.
 def auth_func(**kw):
-    if not flask_login.current_user.is_authenticated:
+    # for demonstration purposes any request with an Authorization header field will be treated as legit
+    if not flask.request.headers.get('Authorization'):
         raise flask_restless.ProcessingException(description='Not Authorized', code=401)
 
 
@@ -149,7 +109,8 @@ api_manager.create_api(Customer,
                        preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func]))
 api_manager.create_api(Deliveryperson, methods=['GET', 'POST', 'PUT', 'DELETE'], exclude_columns=['password'])
 api_manager.create_api(Order, methods=['GET', 'POST'])
-api_manager.create_api(Restaurant, methods=['GET', 'PUT', 'DELETE'], exclude_columns=['password'])
+api_manager.create_api(Restaurant, methods=['GET', 'PUT', 'DELETE'], exclude_columns=['password'],
+                       preprocessors=dict(PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]))
 
 # start the flask loop
 app.run()
