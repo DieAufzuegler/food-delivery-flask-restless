@@ -24,7 +24,7 @@ class Customer(db.Model):
     lastname = db.Column(db.Unicode)
     email = db.Column(db.Unicode, unique=True)
     phone = db.Column(db.Unicode)
-    order = db.relationship('Order', backref="customer", uselist=False)
+    order = db.relationship('Order', backref='customer', uselist=False)
 
 
 class Deliveryperson(db.Model):
@@ -41,6 +41,15 @@ class Deliveryperson(db.Model):
 
 class Menu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    menu = db.relationship('Restaurant', backref='menu', uselist=False)
+    menu_items = db.relationship('MenuItem', backref="menu", lazy='dynamic')
+
+
+class MenuItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
+    name = db.Column(db.Unicode)
+    price = db.Column(db.Float)
 
 
 class Order(db.Model):
@@ -64,7 +73,7 @@ class Restaurant(db.Model):
     email = db.Column(db.Unicode, unique=True)
     phone = db.Column(db.Unicode)
     subscription_type = db.Column(db.Unicode)
-    # TODO menu
+    menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
     orders = db.relationship('Order', backref="restaurant", lazy='dynamic')
 
 
@@ -78,6 +87,12 @@ class Token(db.Model):
 db.create_all()
 
 # Hardcode a few db entries.
+menu1 = Menu()
+db.session.add(menu1)
+menu_item1 = MenuItem(menu_id=1, name="Pizza Margherita", price=6.99)
+db.session.add(menu_item1)
+menu_item2 = MenuItem(menu_id=1, name="Pizza Salami", price=7.99)
+db.session.add(menu_item2)
 restaurant1 = Restaurant(username=u'donenzo',
                          password=u'admin',
                          name='Panuccis Pizza',
@@ -86,6 +101,7 @@ restaurant1 = Restaurant(username=u'donenzo',
                          email="panuccis@example.com",
                          phone="+1 555 123456",
                          subscription_type="Display only",
+                         menu_id=1
                          )
 db.session.add(restaurant1)
 restaurant2 = Restaurant(username=u'veganpower',
@@ -150,12 +166,26 @@ api_manager.create_api(Deliveryperson,
                        preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func],
                                           PUT_SINGLE=[auth_func], PUT_MANY=[auth_func],
                                           DELETE_SINGLE=[auth_func], DELETE_MANY=[auth_func]))
+api_manager.create_api(Menu,
+                       methods=['GET', 'POST', 'PUT', 'DELETE'],
+                       url_prefix='/api/restaurant',
+                       preprocessors=dict(POST_SINGLE=[auth_func], POST_MANY=[auth_func],
+                                          PUT_SINGLE=[auth_func], PUT_MANY=[auth_func],
+                                          DELETE_SINGLE=[auth_func], DELETE_MANY=[auth_func]))
+api_manager.create_api(MenuItem,
+                       methods=['GET', 'POST', 'PUT', 'DELETE'],
+                       url_prefix='/api/restaurant',
+                       preprocessors=dict(POST_SINGLE=[auth_func], POST_MANY=[auth_func],
+                                          PUT_SINGLE=[auth_func], PUT_MANY=[auth_func],
+                                          DELETE_SINGLE=[auth_func], DELETE_MANY=[auth_func]))
 api_manager.create_api(Order,
                        methods=['GET', 'POST', 'PUT'],
                        preprocessors=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func],
                                           POST=[auth_func],
                                           PUT_SINGLE=[auth_func], PUT_MANY=[auth_func]))
-api_manager.create_api(Restaurant, methods=['GET', 'PUT', 'DELETE'], exclude_columns=['password'],
+api_manager.create_api(Restaurant,
+                       methods=['GET', 'PUT', 'DELETE'],
+                       exclude_columns=['password'],
                        preprocessors=dict(PUT_SINGLE=[auth_func], PUT_MANY=[auth_func],
                                           DELETE_SINGLE=[auth_func], DELETE_MANY=[auth_func]))
 
