@@ -42,10 +42,10 @@ class Deliveryperson(db.Model):
 class Menu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     menu = db.relationship('Restaurant', backref='menu', uselist=False)
-    menu_items = db.relationship('MenuItem', backref="menu", lazy='dynamic')
+    menu_items = db.relationship('Menuitem', backref="menu", lazy='dynamic')
 
 
-class MenuItem(db.Model):
+class Menuitem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'))
     name = db.Column(db.Unicode)
@@ -60,7 +60,14 @@ class Order(db.Model):
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'))
     deliveryperson_id = db.Column(db.Integer, db.ForeignKey('deliveryperson.id'))
     status = db.Column(db.Unicode, default="open")
-    # TODO order_items
+    order_items = db.relationship('Orderitem', backref="order", lazy='dynamic')
+
+
+class Orderitem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
+    menuitem_id = db.Column(db.Integer, db.ForeignKey('menuitem.id'))
+    Menuitem = db.relationship('Menuitem', uselist=False)
 
 
 class Restaurant(db.Model):
@@ -89,9 +96,9 @@ db.create_all()
 # Hardcode a few db entries.
 menu1 = Menu()
 db.session.add(menu1)
-menu_item1 = MenuItem(menu_id=1, name="Pizza Margherita", price=6.99)
+menu_item1 = Menuitem(menu_id=1, name="Pizza Margherita", price=6.99)
 db.session.add(menu_item1)
-menu_item2 = MenuItem(menu_id=1, name="Pizza Salami", price=7.99)
+menu_item2 = Menuitem(menu_id=1, name="Pizza Salami", price=7.99)
 db.session.add(menu_item2)
 restaurant1 = Restaurant(username=u'donenzo',
                          password=u'admin',
@@ -172,7 +179,7 @@ api_manager.create_api(Menu,
                        preprocessors=dict(POST_SINGLE=[auth_func], POST_MANY=[auth_func],
                                           PUT_SINGLE=[auth_func], PUT_MANY=[auth_func],
                                           DELETE_SINGLE=[auth_func], DELETE_MANY=[auth_func]))
-api_manager.create_api(MenuItem,
+api_manager.create_api(Menuitem,
                        methods=['GET', 'POST', 'PUT', 'DELETE'],
                        url_prefix='/api/restaurant',
                        preprocessors=dict(POST_SINGLE=[auth_func], POST_MANY=[auth_func],

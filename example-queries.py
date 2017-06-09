@@ -41,7 +41,6 @@ commands = [
         'John Doe places an order at Panuccis Pizza',
         'curl -H "Content-Type: application/json" -H "Authorization: 0a21eccf0f7709bfc14fc90767e198f2" -i -X POST -d \'{ "customer_id": 1, "delivery_address": "Schlossallee 1, 12345 Aachen", "restaurant_id": 1, "status": "open" }\' http://localhost:5000/api/order'
     ],
-    #['Get order with ID 1', 'curl -H "Content-Type: application/json" -i http://localhost:5000/api/order/1'],
     [
         'Add delivery person',
         'curl -H "Content-Type: application/json" -i -X POST -d \'{ "username": "hermes", "firstname": "Hermes", "lastname": "Konrad", "email": "hermes@example.com", "phone": "+49 123 456789" }\' http://localhost:5000/api/deliveryperson'
