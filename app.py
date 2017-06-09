@@ -68,6 +68,7 @@ class Orderitem(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
     menuitem_id = db.Column(db.Integer, db.ForeignKey('menuitem.id'))
     Menuitem = db.relationship('Menuitem', uselist=False)
+    quantity = db.Column(db.Integer, default=1)
 
 
 class Restaurant(db.Model):
