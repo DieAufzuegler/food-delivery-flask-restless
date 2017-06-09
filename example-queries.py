@@ -44,7 +44,11 @@ commands = [
     ],
     [
         'Assign John Doe\'s order placed with Panuccis Pizza to this delivery person',
-        'curl -H "Content-Type: application/json" -H "Authorization: 0a21eccf0f7709bfc14fc90767e198f2" -i -X PUT -d \'{ "on_duty": true, "has_order_assigned": true, "assigned_order": 1 }\' http://localhost:5000/api/deliveryperson/1'
+        'curl -H "Content-Type: application/json" -H "Authorization: 0a21eccf0f7709bfc14fc90767e198f2" -i -X PUT -d \'{ "deliveryperson_id": 1 }\' http://localhost:5000/api/order/1'
+    ],
+    [
+        'Get deliveryperson with ID 1',
+        'curl -H "Content-Type: application/json" -H "Authorization: 0a21eccf0f7709bfc14fc90767e198f2" -i http://localhost:5000/api/customer/1'
     ],
     [
         'Mark order 1 as delivered',

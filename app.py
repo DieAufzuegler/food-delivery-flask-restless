@@ -24,7 +24,7 @@ class Customer(db.Model):
     lastname = db.Column(db.Unicode)
     email = db.Column(db.Unicode, unique=True)
     phone = db.Column(db.Unicode)
-    orders = db.relationship('Order', backref="customer", lazy='dynamic')
+    order = db.relationship('Order', backref="customer", uselist=False)
 
 
 class Deliveryperson(db.Model):
@@ -36,19 +36,21 @@ class Deliveryperson(db.Model):
     email = db.Column(db.Unicode, unique=True)
     phone = db.Column(db.Unicode)
     on_duty = db.Column(db.Boolean, default=False)
-    has_order_assigned = db.Column(db.Boolean, default=False)
-    assigned_order = db.Column(db.Integer, db.ForeignKey('order.id'))
-    #assigned_order = db.relationship('Order', backref="assigned_deliveryperson", uselist=False)
+    assigned_order = db.relationship('Order', lazy='dynamic')
+
+
+class Menu(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
-    delivery_address = db.Column(db.Unicode, default="open")
+    delivery_address = db.Column(db.Unicode)
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'))
-    #deliveryperson_id = db.Column(db.Integer, db.ForeignKey('deliveryperson.id'))
-    status = db.Column(db.Unicode)
+    deliveryperson_id = db.Column(db.Integer, db.ForeignKey('deliveryperson.id'))
+    status = db.Column(db.Unicode, default="open")
     # TODO order_items
 
 
@@ -76,7 +78,6 @@ class Token(db.Model):
 db.create_all()
 
 # Hardcode a few db entries.
-
 restaurant1 = Restaurant(username=u'donenzo',
                          password=u'admin',
                          name='Panuccis Pizza',
