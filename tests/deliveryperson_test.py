@@ -74,7 +74,6 @@ class DeliveryPersonTest(unittest.TestCase):
         self.assertDictEqual(request.json(), expected)
 
     def test_delete_deliveryperson_without_authorization(self):
-        return
         self.test_add_deliveryperson() # reuse previous test that adds deliveryperson
         url = 'http://localhost:5000/api/deliveryperson/1'
         request = requests.delete(url, headers=self.headers)
