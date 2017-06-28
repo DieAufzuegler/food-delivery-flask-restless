@@ -12,5 +12,5 @@
 # How to know what to expect
 Some testcases use a Python dictionary called "expected" to make an assertDictEqual.
 If you are not sure what the "expected" dictionary should look like, temporarily add the following line to your testcase just after making the request
-> print(request.json())
+> print(request.json())  
 run the test and simply copy and paste the output 
