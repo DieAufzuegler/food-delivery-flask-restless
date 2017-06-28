@@ -55,7 +55,9 @@ class MenuTest(unittest.TestCase):
         pass # TODO
 
     def test_delete_menu_without_authorization(self):
-        pass # TODO
+        url = 'http://localhost:5000/api/restaurant/menu/1'
+        request = requests.delete(url, headers=self.defaultheaders)
+        self.assertEqual(request.status_code, 401)
 
     def test_delete_menu_with_authorization(self):
         pass # TODO
