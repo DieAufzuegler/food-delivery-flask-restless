@@ -25,3 +25,9 @@ Clone or download the repository and then run
 ## Example requests
 Once the API server is running you can start an automated presentation by running
 > python3 example-requests.py
+
+## Running the tests
+You need to have the requests library installed in order to the run the tests inside the tests/ subfolder.
+Run the all with the commands
+> cd tests
+> python3 testsuite.py
