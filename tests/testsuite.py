@@ -1,12 +1,13 @@
 import unittest
 from generic_test import GenericTest 
 from customer_test import CustomerTest
+from deliveryperson_test import DeliveryPersonTest
 from order_test import OrderTest
 from restaurant_test import RestaurantTest
 
 
 if __name__ == '__main__':
-    test_classes_to_run = [GenericTest, CustomerTest, OrderTest, RestaurantTest]
+    test_classes_to_run = [GenericTest, CustomerTest, DeliveryPersonTest, OrderTest, RestaurantTest]
 
     loader = unittest.TestLoader()
 
