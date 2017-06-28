@@ -42,6 +42,38 @@ class CustomerTest(unittest.TestCase):
         expected = {'lastname': 'Doe', 'id': 1, 'phone': '+49 123 456789', 'firstname': 'John', 'username': 'doedoe', 'email': 'jd@example.com', 'order': None}
         self.assertDictEqual(request.json(), expected)
 
+    def test_authenticate_non_existing_customer(self):
+        url = 'http://localhost:5000/auth'
+        data = '''{ "username": "derpy", "password": "schuesch" }'''
+        request = requests.post(url, data=data, headers=self.headers)
+        self.assertEqual(request.status_code, 401)
+
+    def test_authenticate_existing_customer(self):
+        self.test_add_customer() # reuse previous to test that adds customer
+        url = 'http://localhost:5000/auth'
+        data = '''{ "username": "doedoe", "password": "securepw" }'''
+        request = requests.post(url, data=data, headers=self.headers)
+        self.assertEqual(request.status_code, 200)
+        #print(request.json())
+        expected = {'token': '0a21eccf0f7709bfc14fc90767e198f2'}
+        self.assertDictEqual(request.json(), expected)
+
+    def test_get_customer_without_authorization(self):
+        url = 'http://localhost:5000/api/customer/1'
+        request = requests.get(url, headers=self.headers)
+        self.assertEqual(request.status_code, 401)
+
+    def test_get_customer_with_authorization(self):
+        self.test_authenticate_existing_customer() # reuse previosu test to add and auth customer
+        url = 'http://localhost:5000/api/customer/1'
+        customheaders = {'content-type': 'application/json', 'authorization': '0a21eccf0f7709bfc14fc90767e198f2'}
+        request = requests.get(url, headers=customheaders)
+        self.assertEqual(request.status_code, 200)
+        #print(request.json())
+        expected = {'email': 'jd@example.com', 'order': None, 'lastname': 'Doe', 'username': 'doedoe', 'phone': '+49 123 456789', 'id': 1, 'firstname': 'John'}
+        self.assertDictEqual(request.json(), expected)
+
+
 
 if __name__ == '__main__':
     unittest.main()
